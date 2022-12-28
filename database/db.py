@@ -1,0 +1,55 @@
+import sqlite3
+
+
+class Database:
+
+    def __init__(self, **kwargs):
+        self._db = sqlite3.connect(kwargs.get('filename'))
+        self._table = kwargs.get('table')
+        self._cursor = self._db.cursor()
+
+    def create_table(self, sql):
+        self._cursor.execute(f'''CREATE TABLE IF NOT EXISTS {self._table}({sql})''')
+
+    def insert(self, **kwargs):
+        keys = ', '.join([key for key in kwargs.keys()])
+        values = [value for value in kwargs.values()]
+        quantity = ', '.join(['?' for i in range(0, len(kwargs))])
+        sql = 'INSERT INTO {}({}) values({})'.format(self._table, keys, quantity)
+        self._cursor.execute(sql, tuple(values))
+        self._db.commit()
+
+    def update(self, id, data):
+        keys = ', '.join([key + ' = ?' for key in data.keys()])
+        values = [value for value in data.values()]
+        sql = 'UPDATE {} SET {} WHERE id = {}'.format(self._table, keys, id)
+        self._cursor.execute(sql, tuple(values))
+        self._db.commit()
+
+    def delete(self, id):
+        sql = 'DELETE FROM {} WHERE id = ?'.format(self._table)
+        self._cursor.execute(sql, tuple(str(id), ))
+        self._db.commit()
+
+    def fetchone(self, id):
+        sql = 'SELECT * from {} WHERE id = ?'.format(self._table)
+        obj = self._cursor.execute(sql, tuple(str(id), ))
+        return list(obj.fetchone())
+
+    def fetchmany(self):
+        sql = 'SELECT * from {}'.format(self._table)
+        self._cursor.execute(sql)
+        return list(self._cursor.fetchall())
+
+    def __enter__(self):
+        # make a database connection and return it
+        return self._db
+
+    def __exit__(self, ext_type, exc_value, traceback):
+        # make sure the database connection gets closed
+        self._cursor.close()
+        if isinstance(exc_value, Exception):
+            self._db.rollback()
+        else:
+            self._db.commit()
+        self._db.close()
