@@ -1,6 +1,7 @@
 from database.db import Database
 
-# table = Database(filename='database/test.database', table='todo')
+table = Database(filename='database/test.db', table='todo')
+
 
 # Create table
 
@@ -28,3 +29,8 @@ from database.db import Database
 
 # DELETE
 # table.delete(id='3')
+
+
+# QUERY
+# data = table.query('title', id=2)
+# print(data)
