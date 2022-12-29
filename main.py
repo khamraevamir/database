@@ -15,14 +15,6 @@ table = Database(filename='database/test.db', table='todo')
 #  INSERT
 # table.insert(title='Post 2', description='Lorem impusum')
 
-# GET
-# note = table.get(id=1)
-# print(note)
-
-# GET ALL
-# notes = table.fetchmany()
-# print(notes)
-
 
 # UPDATE
 # table.update(id=3, data={'title': 'Post 3'})
@@ -32,5 +24,5 @@ table = Database(filename='database/test.db', table='todo')
 
 
 # QUERY
-# data = table.query('title', id=2)
+# data = table.query('*', id=2)
 # print(data)
