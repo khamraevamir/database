@@ -32,14 +32,24 @@ class Database:
         self._db.commit()
 
     def fetchone(self, id):
-        sql = 'SELECT * from {} WHERE id = ?'.format(self._table)
-        obj = self._cursor.execute(sql, tuple(str(id), ))
-        return list(obj.fetchone())
+        sql = 'SELECT * FROM {} WHERE id = ?'.format(self._table)
+        data = self._cursor.execute(sql, tuple(str(id), ))
+        return list(data.fetchone())
 
     def fetchmany(self):
-        sql = 'SELECT * from {}'.format(self._table)
-        self._cursor.execute(sql)
-        return list(self._cursor.fetchall())
+        sql = 'SELECT * FROM {}'.format(self._table)
+        data = self._cursor.execute(sql)
+        return list(data.fetchall())
+
+    def query(self, *args, **kwargs):
+        columns = ', '.join(args)
+        if kwargs:
+            get_by = ', '.join([f"{key} = '{value}' " for key, value in kwargs.items()])
+            sql = f'SELECT {columns} FROM {self._table} WHERE {get_by}'
+        else:
+            sql = f'SELECT {columns} FROM {self._table}'
+        data = self._cursor.execute(sql)
+        return list(data)
 
     def __enter__(self):
         # make a database connection and return it
