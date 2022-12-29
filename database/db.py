@@ -31,16 +31,6 @@ class Database:
         self._cursor.execute(sql, tuple(str(id), ))
         self._db.commit()
 
-    def fetchone(self, id):
-        sql = 'SELECT * FROM {} WHERE id = ?'.format(self._table)
-        data = self._cursor.execute(sql, tuple(str(id), ))
-        return list(data.fetchone())
-
-    def fetchmany(self):
-        sql = 'SELECT * FROM {}'.format(self._table)
-        data = self._cursor.execute(sql)
-        return list(data.fetchall())
-
     def query(self, *args, **kwargs):
         columns = ', '.join(args)
         if kwargs:
