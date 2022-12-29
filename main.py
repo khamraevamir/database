@@ -20,7 +20,7 @@ table = Database(filename='database/test.db', table='todo')
 # table.update(id=3, data={'title': 'Post 3'})
 
 # DELETE
-# table.delete(id='3')
+# table.delete(id=3)
 
 
 # QUERY
