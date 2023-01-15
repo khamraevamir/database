@@ -15,24 +15,24 @@ class Database:
         keys = ', '.join([key for key in kwargs.keys()])
         values = [value for value in kwargs.values()]
         quantity = ', '.join(['?' for i in range(0, len(kwargs))])
-        sql = 'INSERT INTO {}({}) values({})'.format(self._table, keys, quantity)
+        sql = f'INSERT INTO {self._table} ({keys}) VALUES ({quantity})'
         self._cursor.execute(sql, tuple(values))
         self._db.commit()
 
     def update(self, id, data):
         keys = ', '.join([key + ' = ?' for key in data.keys()])
         values = [value for value in data.values()]
-        sql = 'UPDATE {} SET {} WHERE id = {}'.format(self._table, keys, id)
+        sql = f'UPDATE {self._table} SET {keys} WHERE id = {id}'
         self._cursor.execute(sql, tuple(values))
         self._db.commit()
 
     def delete(self, id):
-        sql = 'DELETE FROM {} WHERE id = ?'.format(self._table)
+        sql = f'DELETE FROM {self._table} WHERE id = ?'
         self._cursor.execute(sql, tuple(str(id), ))
         self._db.commit()
 
     def query(self, *args, **kwargs):
-        columns = ', '.join(args)
+        columns = ', '.join(args) if len(args) != 0 else '*'
         if kwargs:
             get_by = ', '.join([f"{key} = '{value}' " for key, value in kwargs.items()])
             sql = f'SELECT {columns} FROM {self._table} WHERE {get_by}'
