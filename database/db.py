@@ -39,7 +39,10 @@ class Database:
         else:
             sql = f'SELECT {columns} FROM {self._table}'
         data = self._cursor.execute(sql)
-        return list(data)
+        keys = [key[0] for key in data.description]
+        result = [{keys[index]: value for index, value in enumerate(item)} for item in list(data)]
+        return  result
+
 
     def __enter__(self):
         # make a database connection and return it
@@ -53,3 +56,4 @@ class Database:
         else:
             self._db.commit()
         self._db.close()
+
