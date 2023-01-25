@@ -1,6 +1,7 @@
 import sqlite3
 
 
+
 class Database:
 
     def __init__(self, **kwargs):
@@ -19,16 +20,18 @@ class Database:
         self._cursor.execute(sql, tuple(values))
         self._db.commit()
 
-    def update(self, id, data):
+    def update(self, filter,  data):
+        filter_data = [(key, value) for key, value in filter.items()][0]
         keys = ', '.join([key + ' = ?' for key in data.keys()])
         values = [value for value in data.values()]
-        sql = f'UPDATE {self._table} SET {keys} WHERE id = {id}'
+        sql = f'UPDATE {self._table} SET {keys} WHERE {filter_data[0]} = {filter_data[1]}'
         self._cursor.execute(sql, tuple(values))
         self._db.commit()
 
-    def delete(self, id):
-        sql = f'DELETE FROM {self._table} WHERE id = ?'
-        self._cursor.execute(sql, tuple(str(id), ))
+    def delete(self, filter):
+        filter_data = [(key, value) for key, value in filter.items()][0]
+        sql = f'DELETE FROM {self._table} WHERE ? = ?'
+        self._cursor.execute(sql, filter_data)
         self._db.commit()
 
     def query(self, *args, **kwargs):
@@ -56,4 +59,3 @@ class Database:
         else:
             self._db.commit()
         self._db.close()
-
